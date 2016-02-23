@@ -1,0 +1,11 @@
+server:
+  port: 8081
+
+zuul:
+  routes:
+    api:
+      path: /api/**
+      url: http://localhost:8080/api
+    auth:
+      path: /auth/**
+      url: http://localhost:8080/auth
