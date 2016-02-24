@@ -31,10 +31,6 @@ public class AuthTokenFilter extends GenericFilterBean {
     return authHeader != null ? authHeader.replaceFirst("Bearer ", "") : null;
   }
 
-  private static UsernamePasswordAuthenticationToken getUsernamePasswordAuthenticationToken(UserDetails userDetails) {
-    return new UsernamePasswordAuthenticationToken(userDetails, userDetails.getPassword(), userDetails.getAuthorities());
-  }
-
   @Override
   public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
     try {
@@ -55,5 +51,9 @@ public class AuthTokenFilter extends GenericFilterBean {
       tokenProvider.validateAuthToken(authToken, userDetails);
       SecurityContextHolder.getContext().setAuthentication(getUsernamePasswordAuthenticationToken(userDetails));
     }
+  }
+
+  private static UsernamePasswordAuthenticationToken getUsernamePasswordAuthenticationToken(UserDetails userDetails) {
+    return new UsernamePasswordAuthenticationToken(userDetails, userDetails.getPassword(), userDetails.getAuthorities());
   }
 }

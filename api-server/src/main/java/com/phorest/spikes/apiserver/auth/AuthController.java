@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
 
+import static org.springframework.web.bind.annotation.RequestMethod.GET;
 import static org.springframework.web.bind.annotation.RequestMethod.POST;
 
 @RestController
@@ -25,7 +26,7 @@ public class AuthController {
     return authenticationService.authenticate(authenticationRequest);
   }
 
-  @RequestMapping("/user")
+  @RequestMapping(method = GET, path = "/user")
   public User user(UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken) {
     return new User(usernamePasswordAuthenticationToken.getName(), usernamePasswordAuthenticationToken.getAuthorities());
   }
