@@ -9,3 +9,6 @@ zuul:
     auth:
       path: /auth/**
       url: http://localhost:8080/auth
+    api-docs:
+      path: /api-docs/**
+      url: http://localhost:8080

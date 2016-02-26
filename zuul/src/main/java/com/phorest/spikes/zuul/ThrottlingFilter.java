@@ -2,6 +2,7 @@ package com.phorest.spikes.zuul;
 
 import com.github.bucket4j.Bucket;
 import com.github.bucket4j.Buckets;
+import com.google.common.collect.Sets;
 import com.netflix.zuul.ZuulFilter;
 import com.netflix.zuul.context.RequestContext;
 import org.slf4j.Logger;
@@ -14,12 +15,15 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.util.UrlPathHelper;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 @Component
 public class ThrottlingFilter extends ZuulFilter {
 
   private static final Logger LOG = LoggerFactory.getLogger(ThrottlingFilter.class);
+
+  private static final Set<String> WHITE_LISTED_ROUES = Sets.newHashSet("api-docs");
 
   private UrlPathHelper urlPathHelper = new UrlPathHelper();
 
@@ -47,9 +51,8 @@ public class ThrottlingFilter extends ZuulFilter {
     final String requestURI = this.urlPathHelper.getPathWithinApplication(request);
     Route route = this.routeLocator.getMatchingRoute(requestURI);
     LOG.info("Request path: {}, location: {}", route.getPath(), route.getLocation());
-    return true;
+    return isNotWhiteListedRoute(route);
   }
-
 
   @Override
   public Object run() {
@@ -61,6 +64,10 @@ public class ThrottlingFilter extends ZuulFilter {
     }
 
     return null;
+  }
+
+  private boolean isNotWhiteListedRoute(Route route) {
+    return !WHITE_LISTED_ROUES.contains(route.getId());
   }
 
   private void setFailedRequest(String body, int code) {
